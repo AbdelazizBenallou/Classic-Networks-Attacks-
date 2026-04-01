@@ -1,0 +1,23 @@
+Enterprise LAN Paper — Style Continuation Prompt
+
+Create a PDF academic paper in the same style as the Enterprise LAN Configuration Guide, using the following design specifications:
+Layout: A4 page, margins 2.5 cm left/right, 2.8 cm top/bottom.
+Color palette:
+
+Navy #1a2744 — titles, section bars, table headers
+Steel #2e4a7c — subheadings, table header alt
+Accent blue #3a7bd5 — left-bar on section labels, TOC page numbers
+Light bg #f0f4fb — alternating table rows, info boxes
+Code bg #f5f5f5 / fg #1e1e1e — code blocks
+Border #c8d4e8 — table grid lines
+
+Page structure: Navy top bar (header) + Navy bottom bar with page number (footer).
+Typography: Helvetica family for all prose; Courier/Courier-Bold for code. Body text 10pt justified, leading 15.
+Section headings: Custom SectionLabel flowable — 4px accent-blue left bar, light-blue background band, navy bold text 11.5pt.
+Subsections: Steel color, Helvetica-Bold 11pt.
+Code blocks: Alternating #f5f5f5 / #ececec row background, border #c8d4e8, Courier 8.2pt, inside a Table flowable.
+Info/note boxes: Light-bg fill, 3pt accent-blue left border, italic steel text — used for warnings and corrections.
+Tables: Navy header row with white bold text, alternating white/light-bg rows, 0.8pt border box, 0.4pt inner grid.
+Title page: Large navy bold title, steel italic subtitle, HR divider in accent blue, abstract in a bordered light-bg box, keywords line in italic grey.
+TOC: Table with entries left-aligned, page numbers in accent blue bold right-aligned, 0.25pt grey line separators.
+Built with: Python reportlab, SimpleDocTemplate, Platypus components. Output to /mnt/user-data/outputs/.

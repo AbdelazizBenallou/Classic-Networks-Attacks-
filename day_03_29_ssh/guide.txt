@@ -1,0 +1,160 @@
+In this lesson we how to config , protect , attack openssh service that use ssh protocol , and symetric and asymetric encryptiopn 
+for the configuration we have many devices that can use :
+	servers , router , switches and ather devices that can access remotely and configure it .
+
+for access we disable access with password , and using asymetric encryption for secure connection and good protect . like change port number , register all logs like tool fail2ban
+
+for simulate a reel lab of lan entreprise , we using in this case gns3, also we using docker for vitualization , andusing some kali tools to simulate some commoon attacks , 
+first of all we start to create a simple lab (lan) and access devices from the internet to access thos devices internal the lan of my entriprise , 
+secondly how i can manage and monitor access with ssh , to know ips , limit and protect from ather devices ; good manage for vty sessions and access and keys , also permissions and ather 
+
+
+
+------------------------------------------------------------------------------------------------------
+
+
+In this lesson, we will learn how to configure, secure, and attack the OpenSSH service, which uses the SSH protocol and relies on both symmetric and asymmetric encryption.
+
+### 1. Introduction to SSH Usage
+
+SSH is widely used to remotely access and manage different types of devices, such as:
+
+* Servers
+* Routers
+* Switches
+* Other network devices
+
+These devices can be configured and controlled securely over a network using SSH.
+
+### 2. Securing SSH Access
+
+To improve security, we apply several best practices:
+
+* Disable password-based authentication
+* Use asymmetric encryption (SSH key pairs) for secure login
+* Change the default SSH port (optional, to reduce automated attacks)
+* Enable logging and monitoring of all connection attempts
+* Use tools like Fail2Ban to block repeated failed login attempts
+
+### 3. Lab Environment Setup
+
+To simulate a real enterprise LAN environment, we will use:
+
+* GNS3 for network simulation
+* Docker for virtualization
+* Kali Linux tools to simulate common SSH attacks
+
+### 4. Practical Lab Scenario
+
+First, we create a simple LAN topology that represents an enterprise network.
+Then, we configure external access to internal devices via SSH, simulating real-world remote administration.
+
+### 5. Monitoring and Management
+
+Next, we focus on managing and monitoring SSH access:
+
+* Identify and track IP addresses connecting to devices
+* Apply access control and limit unauthorized attempts
+* Manage VTY sessions and SSH configurations
+* Handle SSH keys and user permissions properly
+
+This ensures secure and efficient remote administration of network devices.
+
+-----------------------------------------------------------------------------------------------
+
+
+first of all build our lan for this :
+
+one router , 2 switches , and web server , dhcp server , all those using ubuntu image ,  and client on the network lan 
+we have two vlan  , vlan 10 for client , vlan 99 for the servers in sipaarate vlan 
+
+ok ok , but here i need monitor and controle server for administration what i need for this 
+
+Minimum (Recommended)
+	Cockpit → GUI control
+	Fail2Ban → protection
+	SSH keys → secure access
+Better (Pro Setup)
+	Cockpit → daily admin
+	Termius → SSH + key management
+	Grafana + Prometheus → monitoring
+	
+	
+for manage my network =
+	1.Centrelise the adminstration .
+	2. secure remote access
+	3. monitorring and loggin
+
+Your Current Network (Clean Structure)
+	VLAN 10 → Clients
+	VLAN 99 → Servers (Web + DHCP)
+	Router → Inter-VLAN routing
+	Switches → VLAN segmentation
+
+we use openssh to connected remotelly , openssg server 
+
+for the administartion the best practice is the administration in seperate vlan 100 for example 
+
+this admin have all the right to access to thos servers , remote , and analyse the logs , run admin tools because ha have all right access and high privligaes
+
+for controlll the roles in this network because no one from the netwotk of client can access to servers section , just the admin
+
+for the ssh server should use a good rules:
+	PermitRootLogin no
+	PasswordAuthentication no
+	AllowUsers admin
+	
+using a normal user, not a root , no loggin with password ,
+for the monitoring just analyse logs using python (pandas) and ai tools for good report 
+
+for all loogs with python we can manage our logs :
+/var/log/auth.log
+
+
+for powerful use a syslog server :
+for see all active sessions  + detect attacks faster (Advanced) not now 
+
+
+To control & monitor your servers:
+
+	SSH server (OpenSSH)
+	Admin machine (Kali/Ubuntu)
+	Firewall rules (restrict SSH access)
+	SSH hardening (keys only)
+	Monitoring tools (logs + Fail2Ban)
+	Optional: centralized logging
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+

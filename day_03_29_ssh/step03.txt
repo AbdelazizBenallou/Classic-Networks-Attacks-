@@ -1,0 +1,133 @@
+for the nsf is not support in docker because need kernel so we use our distro 
+on the network 
+┌─────────────────────────────────────────┐
+│           GNS3 Network                  │
+│                                         │
+│  SW1 ──── SW2 ──── [Cloud Node]         │
+│             │           │               │
+│          clients    connects to         │
+│                          │              │
+└──────────────────────────┼──────────────┘
+                           │
+                    ┌──────▼──────┐
+                    │  Kali Linux │
+                    │  (your PC)  │
+                    │             │
+                    │  NFS Server │
+                    │  FTP Server │
+                    │  runs here! │
+                    └─────────────┘
+
+we will run the vsftpd service on our machine and also the nfs server here , but we can
+can separarte thos server by 
+
+Step 01:
+should install nfs 
+> apt install nfs-kernel-server -y
+
+Step 02: Create the folders 
+> sudo mkdir -p /srv/shares/hr/common
+sudo mkdir -p /srv/shares/it/common
+sudo mkdir -p /srv/shares/common
+
+Step 03: 
+ set the permissions to this folders :
+
+sudo chown root:root /srv/shares
+sudo chmod 755 /srv/shares
+
+Step 04: 
+config the /etc/exports
+    sudo nano /etc/exports
+
+/srv/shares/hr/common   192.168.10.0/24(rw,sync,no_subtree_check)
+/srv/shares/it/common   192.168.20.0/24(rw,sync,no_subtree_check)
+/srv/shares/common      192.168.10.0/24(ro,sync,no_subtree_check)
+/srv/shares/common      192.168.20.0/24(ro,sync,no_subtree_check)
+
+
+Step 05:
+ after this just start the nfs :
+    sudo exportfs -a
+    sudo systemctl restart nfs-kernel-server
+    sudo systemctl enable nfs-kernel-server
+
+
+to verify :
+    exportfs -v
+
+Step 06:
+
+create interface in your kali named tap0 :
+
+sudo ip tuntap add tap0 mode tap user $(whoami)
+sudo ip addr add 192.168.99.11/24 dev tap0 # give this interface ip
+
+sudo ip link  set tap0 down
+sudo ip link  set tap0 up
+
+if you want to take ip from the dhcp server ;
+sudo dhclient -r tap0 
+sudo dhclient tap0 
+
+we dont forget add the ip route :
+
+sudo ip route add default via 192.168.99.254 dev tap0
+
+in Gns3:
+
+1. Add a "Cloud" node to your topology
+2. Right click Cloud → Configure
+3. Select your Kali network interface
+   (eth0 or the interface connected to GNS3)
+4. Connect Cloud to SW1 or SW2 via a link
+
+
+the final step is add the default route ;
+# On Kali — set IP in the servers VLAN
+sudo ip addr add 192.168.99.20/24 dev eth0
+sudo ip route add 192.168.10.0/24 via 192.168.99.254
+sudo ip route add 192.168.20.0/24 via 192.168.99.254
+
+
+you can add to /etc/network/interfaces
+
+
+Step 07: 
+
+is to install nfs-common -y in the client that want to use this nfs service :
+
+mkdir -p /mnt/hr
+mount -t nfs 192.168.99.20:/srv/shares/hr/common /mnt/hr
+
+you can test this ;
+
+echo "hello from HR" > /mnt/hr/test.txt
+ls /mnt/hr
+
+also good config the permissions of the folders;
+
+# On Kali — fix permissions on the HR folder
+sudo chmod 777 /srv/shares/hr/common
+
+# OR better way — give nobody access
+sudo chown nobody:nogroup /srv/shares/hr/common
+sudo chmod 777 /srv/shares/hr/common
+
+# Restart NFS
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+
+
+full verify :
+
+# On client-nfs-1
+echo "hello from HR" > /mnt/hr/test.txt
+ls /mnt/hr
+
+
+
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+ok need an auth mecanisme in the network to can users access to theier accounts
+

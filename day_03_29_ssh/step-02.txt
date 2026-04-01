@@ -1,0 +1,130 @@
+for momment should to think like a good adminstrator 
+access to the equipement using 
+ssh for router and switches 
+
+openssh service install on servers like dhcp server , ftp server , 
+and database server , if we have more servers should connect to it with 
+secure ways in this cases 
+
+we just config a simple access list in the router to can just the 
+HR and FR access into DB server and File server in the part of this network 
+
+just the admin of the vlan 100 have full access to those servers , by  using ssh , 
+we talk  about this later 
+
+
+
+
+chat gpt is give me this configuration in router :
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+conf t
+hostname R1
+ip domain-name lab.local
+
+crypto key generate rsa
+ip ssh version 2
+
+username admin privilege 15
+
+ip ssh authentication-retries 2
+ip ssh time-out 60
+
+login block-for 120 attempts 3 within 60
+
+access-list 10 permit 192.168.1.10
+
+line vty 0 4
+login local
+transport input ssh
+access-class 10 in
+
+*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-***-*--*-*-*
+
+
+we ned access list on the router to resuse access to the servers vlans , and ather vlans 
+and just 
+
+in thi case the client must be use the file server and can access to it 
+
+on the ftp server we create users and groups for each user in the vlan to
+access to his account 
+
+also config the permissions and folders for the deparetement 
+
+also config the ftp server first
+
+
+
+1. Enter to sever of ftp :
+give him a ip and route :
+
+root@MyFTP:/# ifconfig eth0 192.168.99.11 netmask 255.255.255.0 up
+root@MyFTP:/# ip route add default via 192.168.99.254 
+
+
+second config thr server of ftp :
+
+
+third add groups and users;
+
+root@MyFTP:/# nano /etc/shadow- 
+root@MyFTP:/# 
+root@MyFTP:/# groupadd hr_group
+groupadd it_group
+
+root@MyFTP:/# useradd -m -G hr_group ahmed
+root@MyFTP:/# useradd -m -G hr_group youcef
+root@MyFTP:/# useradd -m -G it_group amine 
+root@MyFTP:/# useradd -m -G it_group ali  
+
+
+4. create work directory to each user in this network :
+
+mkdir -p /srv/shares/hr/common      
+mkdir -p /srv/shares/hr/private/ahmed  
+mkdir -p /srv/shares/hr/private/youcef 
+
+mkdir -p /srv/shares/it/common
+mkdir -p /srv/shares/it/private/amine
+mkdir -p /srv/shares/it/private/ali
+
+select the permissions for each folder on the server:
+
+the full permission for rhe common folders :
+
+chown root:hr_group /srv/shares/hr/common
+chmod 1770 /srv/shares/hr/common
+
+also for the it :
+
+chown root:it_group /srv/shares/hr/common
+chmod 1770 /srv/shares/it/common
+
+
+
+give the access of user to each folder on the folder :
+
+ahmed :
+    root@MyFTP:/# chown ahmed:hr_group /srv/shares/hr/private/ahmed
+    chmod 700 /srv/shares/hr/private/ahmed
+youcef:
+    root@MyFTP:/# chown youcef:hr_group /srv/shares/hr/private/youcef
+    root@MyFTP:/# chmod 700 /srv/shares/hr/private/youcef
+amine:
+    root@MyFTP:/# chown amine:it_group /srv/shares/it/private/amine
+    root@MyFTP:/# chmod 700 /srv/shares/it/private/amine 
+
+ali:
+    root@MyFTP:/# chown ali:it_group /srv/shares/it/private/ali  
+    root@MyFTP:/# chmod 700 /srv/shares/it/private/ali   
+
+ok for this know each user can access to his folder and his account on the network
+but best solution is used gui for this is more easy to manage this 
+
+
+
+we add logs for this also audit for logs 
+
+
+

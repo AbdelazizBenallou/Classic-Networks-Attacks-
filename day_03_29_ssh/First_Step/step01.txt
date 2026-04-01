@@ -1,0 +1,100 @@
+1. build my network lan : 
+ok for the plan of my lan network:  :
+we have  many vlans , 
+vlan 1 = 1992.168.1.0/24
+vlan 10 = 192.168.10.0/24
+vlan 29 = 192.168.20.0/24
+vlan 99 = 192.168.99.0/24
+vlan 100 = 192.168.100.0/24
+
+we use inter--vlan to route between switches and device ss 
+
+
+ok first step is to create vlans and config ports 
+
+after config dhcpd server , after config router to routes between those vlan 
+
+1. Create Vlan in SW1, SW2 = 
+    > vlan 10 > name HR
+    > vlan 20 > name IT
+    > vlan 99 > name servers
+    > vlan 100 > name admin
+
+2. Access ports and truck ports config = 
+
+start with access ports:
+
+enter to the interface =
+> int gi0/x
+> switchport mode access 
+> switchport access vlan X 
+
+for the trunck mode = 
+> int gi0/x 
+> switchport trunck encapsulation dot1q
+> switchport mode trunck 
+
+Step 02 :
+config the dhcp server to deffuse the ps for each vlan =
+
+give the dhcp server a static ip in his vlan  + the gateway : 
+
+that mean the router have ip static o his interface 
+
+ok enter to /etc/dhcp//dhcpd.conf
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.100 192.168.1.200;
+  option routers 192.168.1.254;
+}
+
+subnet 192.168.10.0 netmask 255.255.255.0 {
+  range 192.168.10.100 192.168.1.200;
+  option routers 192.168.10.254;
+}
+
+subnet 192.168.20.0 netmask 255.255.255.0 {
+  range 192.168.20.100 192.168.20.200;
+  option routers 192.168.20.254;
+}
+
+
+subnet 192.168.99.0 netmask 255.255.255.255 {
+  range 192.168.99.100 192.168.99.200;
+  option routers 192.168.99.254;
+}
+
+
+subnet 192.168.100.0 netmask 255.255.255.0 {
+  range 192.168.100.100 192.168.100.200;
+  option routers 192.168.100.254;
+}
+
+
+
+after this just run the dhcp server 
+
+3. step 03 config the router to route between deffrent vlans:
+
+notice the port between the swirch and router is type of truck , to allow multiple 
+vlan go throw
+
+> 
+just write here :
+> int gi0/0.X
+> 
+> ip  address <ip_address> <mask>
+> ip helper-address <dhcp-server-ip>
+
+
+helpful commands = 
+> do sh ip int br
+> do sh vlan
+> do sh run
+
+
+
+
+in router we create a subinterface and five each sub int vlan_id and ip for this 
+subinterface and ip helper to the dhcp server = 
+
