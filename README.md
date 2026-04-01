@@ -1,6 +1,6 @@
 # 🏢 Enterprise LAN Configuration
 
-![Topology](topology.png)
+![Topology](day_03_29_ssh/Screenshot_2026-04-01_16-00-10.png)
 
 > A complete enterprise Local Area Network deployment using VLAN segmentation,
 > Router-on-a-Stick inter-VLAN routing, and centralized DHCP provisioning.
